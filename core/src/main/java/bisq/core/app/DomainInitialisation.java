@@ -71,6 +71,8 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
+import bisq.custom.notifications.TradeHandler;
+
 /**
  * Handles the initialisation of domain classes. We should refactor to the model that the domain classes listen on the
  * relevant start up state from AppStartupState instead to get called. Only for initialisation which has a required
@@ -117,6 +119,7 @@ public class DomainInitialisation {
     private final MempoolService mempoolService;
     private final OpenBsqSwapOfferService openBsqSwapOfferService;
     private final MailboxMessageService mailboxMessageService;
+    private final TradeHandler tradeHandler;
 
     @Inject
     public DomainInitialisation(ClockWatcher clockWatcher,
@@ -157,7 +160,8 @@ public class DomainInitialisation {
                                 TriggerPriceService triggerPriceService,
                                 MempoolService mempoolService,
                                 OpenBsqSwapOfferService openBsqSwapOfferService,
-                                MailboxMessageService mailboxMessageService) {
+                                MailboxMessageService mailboxMessageService
+                                TradeHandler tradeHandler) {
         this.clockWatcher = clockWatcher;
         this.tradeLimits = tradeLimits;
         this.arbitrationManager = arbitrationManager;
@@ -197,6 +201,7 @@ public class DomainInitialisation {
         this.mempoolService = mempoolService;
         this.openBsqSwapOfferService = openBsqSwapOfferService;
         this.mailboxMessageService = mailboxMessageService;
+        this.tradeHandler = tradeHandler;
     }
 
     public void initDomainServices(Consumer<String> rejectedTxErrorMessageHandler,
@@ -297,5 +302,7 @@ public class DomainInitialisation {
                     .filter(AmazonGiftCardAccount::countryNotSet)
                     .collect(Collectors.toList()));
         }
+
+        tradeHandler.onAllServicesInitialized();
     }
 }
