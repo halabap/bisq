@@ -35,6 +35,9 @@ public class TradeHandler {
 
     @Inject
     public TradeHandler(TradeManager tradeManager, KeyRing keyRing, TradeNotificationCliLocator cliLocator) {
+
+        log.info("Instantiating TradeHandler class");
+
         this.tradeManager = tradeManager;
         this.keyRing = keyRing;
         String tradeDataDir = Config.appDataDir().getAbsolutePath() + "/trade_data";
