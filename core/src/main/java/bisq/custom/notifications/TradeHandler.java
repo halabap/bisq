@@ -159,7 +159,7 @@ public class TradeHandler {
         if (phases == null) {
             phases = new TradePhasesDTO();
         }
-        phases.getPhases().add(new TradePhasesDTO.TradePhaseItem(new Date().getTime(), trade.getTradePhase().name()));
+        phases.getPhases().add(new TradePhasesDTO.TradePhaseItem(new Date().getTime(), trade.statePhaseProperty().getValue().name()));
         try {
             objectMapper.writeValue(tradePhasesFile, phases);
         } catch (IOException e) {
