@@ -13,10 +13,20 @@ public class TradePhasesDTO {
         @Getter
         private String phase;
 
+        // empty constructor for JSON deserialization
+        public TradePhaseItem() {
+
+        }
+
         public TradePhaseItem(long date, String phase) {
             this.date = date;
             this.phase = phase;
         }
+    }
+
+    // empty constructor for JSON deserialization
+    public TradePhasesDTO() {
+
     }
 
     @Getter
