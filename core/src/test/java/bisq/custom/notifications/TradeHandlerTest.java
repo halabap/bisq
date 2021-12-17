@@ -142,10 +142,40 @@ public class TradeHandlerTest {
     }
 
     @Test
+    public void testTradePhaseLog() {
+        mockTrade1();
+
+        TradeHandler tradeHandler = new TradeHandler(tradeManager, keyRing, cliLocator);
+        tradeHandler.onAllServicesInitialized();
+        trade1.setState(Trade.State.PREPARATION);
+        trade1Phase.set(Trade.Phase.TAKER_FEE_PUBLISHED);
+        trade1Phase.set(Trade.Phase.DEPOSIT_PUBLISHED);
+        trade1Phase.set(Trade.Phase.DEPOSIT_CONFIRMED);
+
+        Mockito.verify(trade1, Mockito.times(1)).isPayoutPublished();
+
+        File phasesFile = new File(Config.appDataDir().getAbsolutePath() + "/trade_data/trade1Id.phases.json");
+        Assert.assertTrue(phasesFile.exists());
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            TradePhasesDTO phases = objectMapper.readValue(phasesFile, TradePhasesDTO.class);
+            Assert.assertEquals(3, phases.getPhases().size());
+            Assert.assertEquals("TAKER_FEE_PUBLISHED", phases.getPhases().get(0).getPhase());
+            Assert.assertEquals("DEPOSIT_PUBLISHED", phases.getPhases().get(1).getPhase());
+            Assert.assertEquals("DEPOSIT_CONFIRMED", phases.getPhases().get(2).getPhase());
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            Assert.fail("unexpected IOException");
+        }
+    }
+
+    @Test
     public void testTradeNotificationCli() throws IOException {
 
         mockTrade1();
-        mockCliLocator();
+        mockCliLocator(0);
 
         TradeHandler tradeHandler = new TradeHandler(tradeManager, keyRing, cliLocator);
         tradeHandler.onAllServicesInitialized();
@@ -156,13 +186,35 @@ public class TradeHandlerTest {
         Assert.assertTrue(IOUtils.contentEquals(new FileInputStream(tradeFile), new FileInputStream(cliOutputFile)));
     }
 
-    private void mockCliLocator() {
+    @Test
+    public void testTradeNotificationCliTimeout() {
+
+        mockTrade1();
+        mockCliLocator(2);
+
+        TradeHandler tradeHandler = new TradeHandler(tradeManager, keyRing, cliLocator);
+        tradeHandler.onAllServicesInitialized();
+        trade1Phase.set(Trade.Phase.TAKER_FEE_PUBLISHED);
+
+        File cliOutputFile = new File(Config.appDataDir().getAbsolutePath() + "/trade_data/trade1Id.cli-output.json");
+        Assert.assertFalse(cliOutputFile.exists());
+        try {
+            Thread.sleep(2_000);
+            Assert.assertTrue(cliOutputFile.exists());
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            Assert.fail("Unexpected exception");
+        }
+    }
+
+    private void mockCliLocator(int sleepSeconds) {
 
         Mockito.when(cliLocator.getTradeNotificationCliAbsolutePath()).then(a -> {
             File file = new File(Config.appDataDir().getAbsolutePath() + "/trade_data/cli.sh");
             try {
                 BufferedWriter writer = new BufferedWriter(new FileWriter(file));
                 writer.write("#!/bin/bash\n");
+                writer.write("sleep " + sleepSeconds + "\n");
                 writer.write("cat \"$1\" > \"$2\"\n");
                 writer.close();
             } catch (IOException e) {
