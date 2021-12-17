@@ -16,6 +16,7 @@ public class TradeNotificationCliLocator {
             return null;
         } else {
             if (new File(tradeNotificationCli).exists()) {
+                log.info("Found trade notification cli='{}'",tradeNotificationCli);
                 return tradeNotificationCli;
             } else {
                 log.error("Trade notification cli binary does not exist, file={}", tradeNotificationCli);
