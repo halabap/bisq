@@ -15,13 +15,19 @@ public class TradeNotificationCliLocator {
         if (tradeNotificationCli == null) {
             return null;
         } else {
-            if (new File(tradeNotificationCli).exists()) {
+            if (existsAndExecutable(tradeNotificationCli)) {
                 log.info("Found trade notification cli='{}'",tradeNotificationCli);
                 return tradeNotificationCli;
             } else {
-                log.error("Trade notification cli binary does not exist, file={}", tradeNotificationCli);
+                log.error("Trade notification cli binary does not exist or is not executable, file={}", tradeNotificationCli);
                 return null;
             }
         }
+    }
+
+    private boolean existsAndExecutable(String tradeNotificationCli) {
+        String[] cli = tradeNotificationCli.split(" ");
+        File file = new File(cli[0]);
+        return file.exists() && file.canExecute();
     }
 }
