@@ -110,7 +110,7 @@ public class TradeHandler {
             objectMapper.writeValue(tradeDataFile, tradeDTO);
             return true;
         } catch (IOException ex) {
-            log.error("Unable to persist trade data file={}", tradeDataFile.getAbsolutePath());
+            log.error("Unable to persist trade data file='{}'", tradeDataFile.getAbsolutePath());
             return false;
         }
     }
@@ -121,25 +121,25 @@ public class TradeHandler {
         }
         File tradeDataFile = getTradeDataFile(trade);
         if (!tradeDataFile.exists()) {
-            log.error("Trade data file does not exist, file={}", tradeDataFile.getAbsolutePath());
+            log.error("Trade data file does not exist, file='{}'", tradeDataFile.getAbsolutePath());
             return;
         }
         Process p;
         try {
             p = Runtime.getRuntime().exec(tradeNotificationCli + " " + tradeDataFile.getAbsolutePath() + " " + getCliOutputFile(trade).getAbsolutePath());
         } catch (IOException e) {
-            log.error("Error executing trade notification cli binary={}", tradeNotificationCli);
+            log.error("Error executing trade notification cli binary='{}'", tradeNotificationCli);
             return;
         }
         try {
             boolean finished = p.waitFor(1, TimeUnit.SECONDS);
             if (finished) {
-                log.info("Trade notification cli binary={} finished successfully", tradeNotificationCli);
+                log.info("Trade notification cli binary='{}' finished successfully", tradeNotificationCli);
             } else {
-                log.error("Timed out while waiting for finish of trade notification cli binary={}", tradeNotificationCli);
+                log.error("Timed out while waiting for finish of trade notification cli binary='{}'", tradeNotificationCli);
             }
         } catch (InterruptedException e) {
-            log.error("Interrupted while waiting for finish of trade notification cli binary={}", tradeNotificationCli);
+            log.error("Interrupted while waiting for finish of trade notification cli binary='{}'", tradeNotificationCli);
         }
 
     }
@@ -153,7 +153,7 @@ public class TradeHandler {
             try {
                 phases = objectMapper.readValue(tradePhasesFile, TradePhasesDTO.class);
             } catch (IOException e) {
-                log.error("Unable to read trade phases file={}", tradePhasesFile.getAbsolutePath());
+                log.error("Unable to read trade phases file='{}'", tradePhasesFile.getAbsolutePath());
             }
         }
         if (phases == null) {
@@ -163,7 +163,7 @@ public class TradeHandler {
         try {
             objectMapper.writeValue(tradePhasesFile, phases);
         } catch (IOException e) {
-            log.error("Unable to persist trade phases file={}", tradePhasesFile.getAbsolutePath());
+            log.error("Unable to persist trade phases file='{}'", tradePhasesFile.getAbsolutePath());
         }
     }
 
