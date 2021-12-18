@@ -172,6 +172,31 @@ public class TradeHandlerTest {
     }
 
     @Test
+    public void testBackupOnWithdrawn() {
+
+        mockTrade1();
+        mockCliLocator(0);
+
+        TradeHandler tradeHandler = new TradeHandler(tradeManager, keyRing, cliLocator);
+        tradeHandler.onAllServicesInitialized();
+        trade1Phase.set(Trade.Phase.TAKER_FEE_PUBLISHED);
+        trade1Phase.set(Trade.Phase.WITHDRAWN);
+
+        File tradeFile = new File(Config.appDataDir().getAbsolutePath() + "/trade_data/trade1Id.trade.json");
+        File tradeBackupFile = new File(Config.appDataDir().getAbsolutePath() + "/trade_data/backup/trade1Id.trade.json");
+        File phasesFile = new File(Config.appDataDir().getAbsolutePath() + "/trade_data/trade1Id.phases.json");
+        File phasesBackupFile = new File(Config.appDataDir().getAbsolutePath() + "/trade_data/backup/trade1Id.phases.json");
+        File cliOutputFile = new File(Config.appDataDir().getAbsolutePath() + "/trade_data/trade1Id.cli-output.json");
+        File cliOutputBackupFile = new File(Config.appDataDir().getAbsolutePath() + "/trade_data/backup/trade1Id.cli-output.json");
+        Assert.assertFalse(tradeFile.exists());
+        Assert.assertTrue(tradeBackupFile.exists());
+        Assert.assertFalse(phasesFile.exists());
+        Assert.assertTrue(phasesBackupFile.exists());
+        Assert.assertFalse(cliOutputFile.exists());
+        Assert.assertTrue(cliOutputBackupFile.exists());
+    }
+
+    @Test
     public void testTradeNotificationCli() throws IOException {
 
         mockTrade1();
