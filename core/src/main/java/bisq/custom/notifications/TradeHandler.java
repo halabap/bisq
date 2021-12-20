@@ -72,7 +72,7 @@ public class TradeHandler {
                     notifyTradeCli(trade);
                 }
                 persistTradePhase(trade);
-                if (newValue == Trade.Phase.WITHDRAWN) {
+                if (newValue == Trade.Phase.PAYOUT_PUBLISHED) {
                     backupFile(getTradeDataFile(trade));
                     backupFile(getTradePhasesFile(trade));
                     backupFile(getCliOutputFile(trade));
