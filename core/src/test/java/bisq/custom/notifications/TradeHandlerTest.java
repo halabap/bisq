@@ -172,7 +172,7 @@ public class TradeHandlerTest {
     }
 
     @Test
-    public void testBackupOnWithdrawn() {
+    public void testBackupOnPayoutPublished() {
 
         mockTrade1();
         mockCliLocator(0);
@@ -180,7 +180,7 @@ public class TradeHandlerTest {
         TradeHandler tradeHandler = new TradeHandler(tradeManager, keyRing, cliLocator);
         tradeHandler.onAllServicesInitialized();
         trade1Phase.set(Trade.Phase.TAKER_FEE_PUBLISHED);
-        trade1Phase.set(Trade.Phase.WITHDRAWN);
+        trade1Phase.set(Trade.Phase.PAYOUT_PUBLISHED);
 
         File tradeFile = new File(Config.appDataDir().getAbsolutePath() + "/trade_data/trade1Id.trade.json");
         File tradeBackupFile = new File(Config.appDataDir().getAbsolutePath() + "/trade_data/backup/trade1Id.trade.json");
