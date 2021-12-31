@@ -23,10 +23,8 @@ import com.sun.javafx.collections.ObservableListWrapper;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 
 import java.util.List;
 
@@ -57,9 +55,10 @@ public class TradeHandlerTest {
     Offer trade1Offer;
     Price trade1Price;
     Coin trade1MakerFee;
+    Coin trade1MakerTxFee;
     Coin trade1TakerFee;
     Volume trade1Volume;
-    Coin tradeTxFee;
+    Coin trade1TakerTxFee;
     TradeNotificationCliLocator cliLocator;
 
     @BeforeClass
@@ -83,11 +82,14 @@ public class TradeHandlerTest {
         trade1MakerFee = Mockito.mock(Coin.class);
         Mockito.when(trade1Offer.getMakerFee()).thenReturn(trade1MakerFee);
         trade1TakerFee = Mockito.mock(Coin.class);
+        trade1MakerTxFee = Mockito.mock(Coin.class);
+        Mockito.when(trade1Offer.getTxFee()).thenReturn(trade1MakerTxFee);
+        trade1TakerFee = Mockito.mock(Coin.class);
         Mockito.when(trade1.getTakerFee()).thenReturn(trade1TakerFee);
         trade1Volume = Mockito.mock(Volume.class);
         Mockito.when(trade1.getVolume()).thenReturn(trade1Volume);
-        tradeTxFee = Mockito.mock(Coin.class);
-        Mockito.when(trade1.getTradeTxFee()).thenReturn(tradeTxFee);
+        trade1TakerTxFee = Mockito.mock(Coin.class);
+        Mockito.when(trade1.getTradeTxFee()).thenReturn(trade1TakerTxFee);
         cliLocator = Mockito.mock(TradeNotificationCliLocator.class);
     }
 
@@ -131,9 +133,10 @@ public class TradeHandlerTest {
             assertEquals(10_000L * 700_000L, tradeDTO.getVolume());
             assertEquals(444L, tradeDTO.getMakerFee());
             assertTrue(tradeDTO.isCurrencyForMakerFeeBtc());
+            assertEquals(888L, tradeDTO.getMakerTxFee());
             assertEquals(445L, tradeDTO.getTakerFee());
             assertTrue(tradeDTO.isCurrencyForTakerFeeBtc());
-            assertEquals(500L, tradeDTO.getTradeTxFee());
+            assertEquals(500L, tradeDTO.getTakerTxFee());
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -266,6 +269,7 @@ public class TradeHandlerTest {
         Mockito.when(trade1.getVolume().getValue()).thenReturn(10_000L * 700_000L);
         Mockito.when(trade1.getOffer().getMakerFee().getValue()).thenReturn(444L);
         Mockito.when(trade1.getOffer().isCurrencyForMakerFeeBtc()).thenReturn(true);
+        Mockito.when(trade1.getOffer().getTxFee().getValue()).thenReturn(888L);
         Mockito.when(trade1.getTakerFeeAsLong()).thenReturn(445L);
         Mockito.when(trade1.isCurrencyForTakerFeeBtc()).thenReturn(true);
         Mockito.when(trade1.getTradeTxFeeAsLong()).thenReturn(500L);
