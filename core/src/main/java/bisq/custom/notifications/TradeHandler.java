@@ -101,6 +101,7 @@ public class TradeHandler {
                 trade.getVolume() == null ? -1 : trade.getVolume().getValue(),
                 trade.getOffer().getMakerFee().getValue(),
                 trade.getOffer().isCurrencyForMakerFeeBtc(),
+                trade.getOffer().getTxFee().getValue(),
                 trade.getTakerFeeAsLong(),
                 trade.isCurrencyForTakerFeeBtc(),
                 trade.getTradeTxFeeAsLong()

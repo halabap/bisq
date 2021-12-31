@@ -49,13 +49,16 @@ public class TradeDTO {
     private boolean currencyForMakerFeeBtc;
 
     @Getter
+    private long makerTxFee;
+
+    @Getter
     private long takerFee;
 
     @Getter
     private boolean currencyForTakerFeeBtc;
 
     @Getter
-    private long tradeTxFee;
+    private long takerTxFee;
 
     // empty constructor for JSON deserialization
     public TradeDTO() {
@@ -73,9 +76,10 @@ public class TradeDTO {
                     long volume,
                     long makerFee,
                     boolean currencyForMakerFeeBtc,
+                    long makerTxFee,
                     long takerFee,
                     boolean currencyForTakerFeeBtc,
-                    long tradeTxFee) {
+                    long takerTxFee) {
         this.id = id;
         this.tradePhase = tradePhase;
         this.takeOfferDate = takeOfferDate;
@@ -87,8 +91,9 @@ public class TradeDTO {
         this.volume = volume;
         this.makerFee = makerFee;
         this.currencyForMakerFeeBtc = currencyForMakerFeeBtc;
+        this.makerTxFee = makerTxFee;
         this.takerFee = takerFee;
         this.currencyForTakerFeeBtc = currencyForTakerFeeBtc;
-        this.tradeTxFee = tradeTxFee;
+        this.takerTxFee = takerTxFee;
     }
 }
