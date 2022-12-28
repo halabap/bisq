@@ -160,7 +160,7 @@ public class DomainInitialisation {
                                 TriggerPriceService triggerPriceService,
                                 MempoolService mempoolService,
                                 OpenBsqSwapOfferService openBsqSwapOfferService,
-                                MailboxMessageService mailboxMessageService
+                                MailboxMessageService mailboxMessageService,
                                 TradeHandler tradeHandler) {
         this.clockWatcher = clockWatcher;
         this.tradeLimits = tradeLimits;
