@@ -32,16 +32,14 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.mockito.Mockito;
 
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 @Slf4j
 public class TradeHandlerTest {
@@ -61,11 +59,7 @@ public class TradeHandlerTest {
     Coin trade1TakerTxFee;
     TradeNotificationCliLocator cliLocator;
 
-    @BeforeClass
-    public static void beforeClass() {
-    }
-
-    @Before
+    @BeforeEach
     public void before() {
         tradeManager = Mockito.mock(TradeManager.class);
         keyRing = Mockito.mock(KeyRing.class);
@@ -93,7 +87,7 @@ public class TradeHandlerTest {
         cliLocator = Mockito.mock(TradeNotificationCliLocator.class);
     }
 
-    @After
+    @AfterEach
     public void after() {
         config.appDataDir.delete();
     }
@@ -101,9 +95,9 @@ public class TradeHandlerTest {
     @Test
     public void testTradeHandlerCreation() {
         File file = new File(Config.appDataDir().getAbsolutePath() + "/trade_data/backup");
-        Assert.assertFalse(file.exists());
+        assertFalse(file.exists());
         TradeHandler tradeHandler = new TradeHandler(tradeManager, keyRing, cliLocator);
-        Assert.assertTrue(file.exists());
+        assertTrue(file.exists());
     }
 
     @Test
@@ -117,7 +111,7 @@ public class TradeHandlerTest {
         Mockito.verify(trade1, Mockito.times(1)).isPayoutPublished();
 
         File tradeFile = new File(Config.appDataDir().getAbsolutePath() + "/trade_data/trade1Id.trade.json");
-        Assert.assertTrue(tradeFile.exists());
+        assertTrue(tradeFile.exists());
 
         ObjectMapper objectMapper = new ObjectMapper();
         try {
@@ -140,7 +134,7 @@ public class TradeHandlerTest {
 
         } catch (IOException e) {
             e.printStackTrace();
-            Assert.fail("unexpected IOException");
+            fail("unexpected IOException");
         }
     }
 
@@ -158,19 +152,19 @@ public class TradeHandlerTest {
         Mockito.verify(trade1, Mockito.times(1)).isPayoutPublished();
 
         File phasesFile = new File(Config.appDataDir().getAbsolutePath() + "/trade_data/trade1Id.phases.json");
-        Assert.assertTrue(phasesFile.exists());
+        assertTrue(phasesFile.exists());
 
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             TradePhasesDTO phases = objectMapper.readValue(phasesFile, TradePhasesDTO.class);
-            Assert.assertEquals(3, phases.getPhases().size());
-            Assert.assertEquals("TAKER_FEE_PUBLISHED", phases.getPhases().get(0).getPhase());
-            Assert.assertEquals("DEPOSIT_PUBLISHED", phases.getPhases().get(1).getPhase());
-            Assert.assertEquals("DEPOSIT_CONFIRMED", phases.getPhases().get(2).getPhase());
+            assertEquals(3, phases.getPhases().size());
+            assertEquals("TAKER_FEE_PUBLISHED", phases.getPhases().get(0).getPhase());
+            assertEquals("DEPOSIT_PUBLISHED", phases.getPhases().get(1).getPhase());
+            assertEquals("DEPOSIT_CONFIRMED", phases.getPhases().get(2).getPhase());
 
         } catch (IOException e) {
             e.printStackTrace();
-            Assert.fail("unexpected IOException");
+            fail("unexpected IOException");
         }
     }
 
@@ -191,12 +185,12 @@ public class TradeHandlerTest {
         File phasesBackupFile = new File(Config.appDataDir().getAbsolutePath() + "/trade_data/backup/trade1Id.phases.json");
         File cliOutputFile = new File(Config.appDataDir().getAbsolutePath() + "/trade_data/trade1Id.cli-output.json");
         File cliOutputBackupFile = new File(Config.appDataDir().getAbsolutePath() + "/trade_data/backup/trade1Id.cli-output.json");
-        Assert.assertFalse(tradeFile.exists());
-        Assert.assertTrue(tradeBackupFile.exists());
-        Assert.assertFalse(phasesFile.exists());
-        Assert.assertTrue(phasesBackupFile.exists());
-        Assert.assertFalse(cliOutputFile.exists());
-        Assert.assertTrue(cliOutputBackupFile.exists());
+        assertFalse(tradeFile.exists());
+        assertTrue(tradeBackupFile.exists());
+        assertFalse(phasesFile.exists());
+        assertTrue(phasesBackupFile.exists());
+        assertFalse(cliOutputFile.exists());
+        assertTrue(cliOutputBackupFile.exists());
     }
 
     @Test
@@ -211,7 +205,7 @@ public class TradeHandlerTest {
 
         File tradeFile = new File(Config.appDataDir().getAbsolutePath() + "/trade_data/trade1Id.trade.json");
         File cliOutputFile = new File(Config.appDataDir().getAbsolutePath() + "/trade_data/trade1Id.cli-output.json");
-        Assert.assertTrue(IOUtils.contentEquals(new FileInputStream(tradeFile), new FileInputStream(cliOutputFile)));
+        assertTrue(IOUtils.contentEquals(new FileInputStream(tradeFile), new FileInputStream(cliOutputFile)));
     }
 
     @Test
@@ -225,13 +219,13 @@ public class TradeHandlerTest {
         trade1Phase.set(Trade.Phase.TAKER_FEE_PUBLISHED);
 
         File cliOutputFile = new File(Config.appDataDir().getAbsolutePath() + "/trade_data/trade1Id.cli-output.json");
-        Assert.assertFalse(cliOutputFile.exists());
+        assertFalse(cliOutputFile.exists());
         try {
             Thread.sleep(2_000);
-            Assert.assertTrue(cliOutputFile.exists());
+            assertTrue(cliOutputFile.exists());
         } catch (InterruptedException e) {
             e.printStackTrace();
-            Assert.fail("Unexpected exception");
+            fail("Unexpected exception");
         }
     }
 
